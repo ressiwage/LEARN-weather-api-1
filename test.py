@@ -1,8 +1,9 @@
-from rswg_weather_sdk import Api
+from rswg_weather_sdk import Apis
 import json as j
 
 #correct key
-api=Api("4219ff37a155ea4305cd9cefc916c336")
+api=Apis().get_api("4219ff37a155ea4305cd9cefc916c336")
 
+print(api.get_weather('nyc'))
 #incorrect key
-api=Api("228148291")
+#api=Api("228148291")
