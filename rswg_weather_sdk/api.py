@@ -1,19 +1,23 @@
 from .resources import requests, json, datetime
+from .utils import timed_lru_cache
 #TODO:
 # on demand and pooling mode
-# two instances with same key not possible
+
 class Apis:
     
     keys=set()
     def get_api(self, api_key):
         if api_key not in self.keys:
-            return Api(api_key)
+            return Api(api_key, self)
         else:
             raise Exception('multiple apis with same keys not allowed')
+        
+    def __delete(self, child):
+        pass
 
         
 class Api:
-    def __init__(self, api_key):
+    def __init__(self, api_key, parent):
         self.api_key = api_key
         #check if correct key
         check = requests.get(
@@ -23,11 +27,10 @@ class Api:
         if check.status_code==401:
             raise Exception('invalid api key')
 
+    @timed_lru_cache(60*10, 10)
     def get_weather(self, city):
         """
-
         @city=string
-        
         """
         coordinates = self.__get_city_coordinates(city)
         
@@ -36,7 +39,7 @@ class Api:
             )
         if resp.status_code==401:
             raise Exception('invalid api key')
-        self.latest_cities.append({'name':coordinates['name'], 'time':'now'})
+        self.latest_cities.append(coordinates['_name'])
         if self.latest_cities.__len__>10:
             self.latest_cities.pop(0)
         return resp.json()
