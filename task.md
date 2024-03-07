@@ -1,4 +1,3 @@
-Technical Documentation:
 1. The SDK should accept API KEY for OpenWeatherAPI on initialization
 2. The SDK should accept the name of the city and return information about the weather at the current
 moment. The SDK returns information about the first city which was found by searching for the city
